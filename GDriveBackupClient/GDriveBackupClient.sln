@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDriveBackupClient", "GDriveBackupClient.csproj", "{EC69472F-C446-4A57-B83C-149DFDD0ACC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDriveClientLib", "..\GDriveClientLib\GDriveClientLib.csproj", "{1087517C-2775-488A-8E17-89D42738423D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC69472F-C446-4A57-B83C-149DFDD0ACC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC69472F-C446-4A57-B83C-149DFDD0ACC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC69472F-C446-4A57-B83C-149DFDD0ACC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC69472F-C446-4A57-B83C-149DFDD0ACC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1087517C-2775-488A-8E17-89D42738423D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1087517C-2775-488A-8E17-89D42738423D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1087517C-2775-488A-8E17-89D42738423D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1087517C-2775-488A-8E17-89D42738423D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

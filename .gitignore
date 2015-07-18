@@ -55,6 +55,7 @@ build/
 [Bb]uild[Ll]og.*
 
 _ReSharper.GDriveBackupClient/
+packages/
 
 *_i.c
 *_p.c
@@ -218,3 +219,4 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+GDriveBackupClient/client_secrets.json
