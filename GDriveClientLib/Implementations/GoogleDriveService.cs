@@ -1,5 +1,5 @@
-﻿using Google.Apis.Drive.v2;
-using GDriveClientLib.Interfaces;
+﻿using GDriveClientLib.Abstractions;
+using Google.Apis.Drive.v2;
 
 namespace GDriveClientLib.Implementations
 {

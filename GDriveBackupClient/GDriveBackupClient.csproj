@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GDriveBackupClient</RootNamespace>
     <AssemblyName>GDriveBackupClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -113,9 +114,17 @@
     <Folder Include="Implementations\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GDriveClientLib\GDriveClientLib.csproj">
+    <ProjectReference Include="..\GDriveClientLib\Core.csproj">
       <Project>{1087517c-2775-488a-8e17-89d42738423d}</Project>
-      <Name>GDriveClientLib</Name>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LocalFileSystemLib\LocalFileSystemLib.csproj">
+      <Project>{6a08090e-dcaa-483a-8494-4104eb7f7544}</Project>
+      <Name>LocalFileSystemLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj">
+      <Project>{fe80cbe2-b606-431e-a66a-da4b02f09542}</Project>
+      <Name>GoogleDriveFileSystemLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

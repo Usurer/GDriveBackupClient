@@ -56,6 +56,7 @@ build/
 
 _ReSharper.GDriveBackupClient/
 packages/
+.vs/
 
 *_i.c
 *_p.c

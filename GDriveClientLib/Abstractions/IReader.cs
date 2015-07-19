@@ -1,6 +1,4 @@
-﻿using Google.Apis.Drive.v2;
-
-namespace GDriveClientLib.Interfaces
+﻿namespace GDriveClientLib.Abstractions
 {
     public interface IReader
     {

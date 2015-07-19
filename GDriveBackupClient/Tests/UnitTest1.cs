@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using Autofac;
 using GDriveClientLib.Abstractions;
@@ -7,11 +8,33 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v2;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LocalFileSystemLib;
+using GoogleDriveFileSystemLib;
+using Uploader = GDriveClientLib.Implementations.Uploader;
 
-namespace GDriveBackupClient
+namespace Tests
 {
-    internal class Initializer
+    [TestClass]
+    public class LocalFileSystemTests
     {
+        [TestMethod]
+        public void TestLocalTree()
+        {
+            var fileManager = new LocalFileSystemLib.FileManager();
+            var node = fileManager.GetTree(@"E:\Coding", 1);
+            node = fileManager.GetTree(@"E:\Coding\Main.7z", 1);
+        }
+
+        [TestMethod]
+        public void TestGoogleTree()
+        {
+            IContainer container = RegisterComponents();
+            var fileManager = new GoogleDriveFileSystemLib.FileManager(container.Resolve<IGoogleDriveService>());
+            var node = fileManager.GetTree("root", 2);
+            Assert.IsNotNull(node);
+        }
+
         public IContainer RegisterComponents()
         {
             var builder = new ContainerBuilder();
