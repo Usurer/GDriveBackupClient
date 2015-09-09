@@ -25,11 +25,9 @@ namespace GoogleDriveFileSystemLib
                 return null;
             }
 
-            var request = GoogleDriveService.Children.List(rootPath);
-            var requestResult = request.Execute();
+            var requestResult = GetChildren(rootPath);
 
-            var infoRequest = GoogleDriveService.Files.Get(rootPath);
-            var infoResult = infoRequest.Execute();
+            var infoResult = GetFileInfo(rootPath);
 
             var result = new Node
             {
@@ -39,11 +37,24 @@ namespace GoogleDriveFileSystemLib
                 Children = requestResult
                     .Items
                     .Select(child => GetTree(child.Id, depth - 1))
-                    .Where(x => x != null)
-                    .ToArray(),
+                    .Where(x => x != null),
             };
 
             return result;
+        }
+
+        private File GetFileInfo(string rootPath)
+        {
+            var infoRequest = GoogleDriveService.Files.Get(rootPath);
+            var infoResult = infoRequest.Execute();
+            return infoResult;
+        }
+
+        private ChildList GetChildren(string rootPath)
+        {
+            var request = GoogleDriveService.Children.List(rootPath);
+            var requestResult = request.Execute();
+            return requestResult;
         }
 
         private NodeType GetNodeType(File file)

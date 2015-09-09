@@ -1,4 +1,6 @@
-﻿using GDriveClientLib.Abstractions;
+﻿using System.Collections.Generic;
+
+using GDriveClientLib.Abstractions;
 
 namespace GDriveClientLib.Implementations
 {
@@ -10,6 +12,6 @@ namespace GDriveClientLib.Implementations
 
         public NodeType NodeType { get; set; }
 
-        public INode[] Children { get; set; }
+        public IEnumerable<INode> Children { get; set; }
     }
 }

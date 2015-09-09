@@ -15,24 +15,22 @@ namespace GDriveBackupClient
     {
         public static void Main(string[] args)
         {
-            IContainer container = new Initializer().RegisterComponents();
-
             Console.OutputEncoding = Encoding.Unicode;
-
-            /*using (var stream = File.OpenRead("document.txt"))
-            {
-                var uploader = container.Resolve<IUploader>();
-                uploader.Upload(service, stream);    
-            }*/
-
-            /*var reader = container.Resolve<IReader>();
-            reader.DrawRootTree();*/
+            Console.WriteLine("========== START ==========");
+            
+            IContainer container = new Initializer().RegisterComponents();
 
             var localFSManager = new LocalFileSystemLib.FileManager();
             var googleFSManager = new GoogleDriveFileSystemLib.FileManager(container.Resolve<IGoogleDriveService>());
 
-            var backups =
-                googleFSManager.GetTree("root", 4)
+            var root = googleFSManager.GetTree("root", 2);
+            foreach (var child in root.Children)
+            {
+                Console.WriteLine(child.Name);
+            }
+            
+            /*var backups =
+                googleFSManager.GetTree("root", 1)
                     .Children.Where(x => x.Name.Equals("backups", StringComparison.InvariantCultureIgnoreCase))
                     .Select((x, index) => new KeyValuePair<int, INode>(index, x))
                     .ToArray();
@@ -45,7 +43,7 @@ namespace GDriveBackupClient
             var first = backups.First();
 
             var localFiles = localFSManager.GetTree(@"G:\DATA", null);
-            ListAbsent(localFiles, first.Value);
+            ListAbsent(localFiles, first.Value);*/
 
             Console.WriteLine("=============");
             Console.WriteLine("Done");

@@ -1,4 +1,6 @@
-﻿namespace GDriveClientLib.Abstractions
+﻿using System.Collections.Generic;
+
+namespace GDriveClientLib.Abstractions
 {
     public interface INode
     {
@@ -9,6 +11,6 @@
 
         NodeType NodeType { get; set; }
 
-        INode[] Children { get; set; }                
+        IEnumerable<INode> Children { get; set; }                
     }
 }
