@@ -11,13 +11,8 @@ namespace LocalFileSystemLib
 {
     public class FileManager : IFileManager
     {
-        public INode GetTree(string rootPath, int? depth)
+        public INode GetTree(string rootPath)
         {
-            if (depth <= 0)
-            {
-                return null;
-            }
-
             var directoryInfo = new DirectoryInfo(rootPath);
             if (directoryInfo.Attributes != FileAttributes.Directory)
             {
@@ -37,9 +32,8 @@ namespace LocalFileSystemLib
                 NodeType = NodeType.Folder
             };
 
-            var tree = directoryInfo.EnumerateFileSystemInfos().Select(fileSystemInfo => GetTree(fileSystemInfo.FullName, depth - 1)).ToList();
+            result.Children = directoryInfo.EnumerateFileSystemInfos().Select(fileSystemInfo => new Node { Id = fileSystemInfo.FullName, Children = new INode[0] }).ToList();
 
-            result.Children = tree.Where(x => x != null).ToArray();
             return result;
         }
     }

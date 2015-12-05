@@ -2,6 +2,6 @@
 {
     public interface IFileManager
     {
-        INode GetTree(string rootPath, int? depth);
+        INode GetTree(string rootPath);
     }
 }

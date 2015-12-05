@@ -22,8 +22,8 @@ namespace Tests
         public void TestLocalTree()
         {
             var fileManager = new LocalFileSystemLib.FileManager();
-            var node = fileManager.GetTree(@"E:\Coding", 1);
-            node = fileManager.GetTree(@"E:\Coding\Main.7z", 1);
+            var node = fileManager.GetTree(@"E:\Coding");
+            node = fileManager.GetTree(@"E:\Coding\Main.7z");
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace Tests
         {
             IContainer container = RegisterComponents();
             var fileManager = new GoogleDriveFileSystemLib.FileManager(container.Resolve<IGoogleDriveService>());
-            var node = fileManager.GetTree("root", 2);
+            var node = fileManager.GetTree("root");
             Assert.IsNotNull(node);
         }
 

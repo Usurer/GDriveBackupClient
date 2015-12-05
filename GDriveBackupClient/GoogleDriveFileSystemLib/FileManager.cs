@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using GDriveClientLib.Abstractions;
 using GDriveClientLib.Implementations;
+using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
+using Google.Apis.Services;
 
 namespace GoogleDriveFileSystemLib
 {
@@ -18,13 +20,8 @@ namespace GoogleDriveFileSystemLib
             GoogleDriveService = googleDriveService;
         }
 
-        public INode GetTree(string rootPath, int? depth)
+        public INode GetTree(string rootPath)
         {
-            if (depth <= 0)
-            {
-                return null;
-            }
-
             var requestResult = GetChildren(rootPath);
 
             var infoResult = GetFileInfo(rootPath);
@@ -34,10 +31,10 @@ namespace GoogleDriveFileSystemLib
                 Id = infoResult.Id,
                 Name = infoResult.Title,
                 NodeType = GetNodeType(infoResult),
+                // I want children to be populated either by user request or in some background thread as this is very time-consuming operation
                 Children = requestResult
                     .Items
-                    .Select(child => GetTree(child.Id, depth - 1))
-                    .Where(x => x != null),
+                    .Select(child => new Node { Id = child.Id }).ToArray(),
             };
 
             return result;
@@ -53,6 +50,7 @@ namespace GoogleDriveFileSystemLib
         private ChildList GetChildren(string rootPath)
         {
             var request = GoogleDriveService.Children.List(rootPath);
+            request.MaxResults = 1000;
             var requestResult = request.Execute();
             return requestResult;
         }
