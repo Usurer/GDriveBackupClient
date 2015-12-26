@@ -15,6 +15,7 @@ using LocalFileManager = LocalFileSystemLib.FileManager;
 
 namespace GDriveBackupClient
 {
+    // TODO: Integrate with Trello!
     internal class DriveCommandLineSample
     {
         public static void Main(string[] args)
@@ -33,6 +34,9 @@ namespace GDriveBackupClient
 
         private static void StartApplication()
         {
+            /*TODO: I want these Console calls to be done via some ILogger interface. In this class it's useless, but since I don't want
+            Console to be used in other namespaces - I want them to receive the ILogger and just write stuff to Debug, Error etc log.
+            So for Console app I'd be able to use simple class that would write to Console as an ILogger implementation.*/
             Console.OutputEncoding = Encoding.Unicode;
             Console.WriteLine("========== START ==========");
 
