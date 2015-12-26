@@ -19,9 +19,23 @@ namespace GDriveBackupClient
     {
         public static void Main(string[] args)
         {
+            try
+            {
+                StartApplication();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            
+        }
+
+        private static void StartApplication()
+        {
             Console.OutputEncoding = Encoding.Unicode;
             Console.WriteLine("========== START ==========");
-            
+
             IContainer container = new Initializer().RegisterComponents();
 
             var localFSManager = new LocalFileManager();
@@ -43,12 +57,15 @@ namespace GDriveBackupClient
                 child.NodeType = childData.NodeType;
                 child.Children = childData.Children;
 
-                // TODO: Check, that ! and + lines are messed together in the output because of the Async nature of Children. A good thing to investigate.
-                if (!children.Where(g => !string.IsNullOrEmpty(g.Name)).Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
+                if (
+                    !children.Where(g => !string.IsNullOrEmpty(g.Name))
+                        .Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     Console.WriteLine(" ! {0}", child.Name);
                 }
-                if (children.Where(g => !string.IsNullOrEmpty(g.Name)).Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
+                if (
+                    children.Where(g => !string.IsNullOrEmpty(g.Name))
+                        .Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     Console.WriteLine(" + {0}", child.Name);
                 }
