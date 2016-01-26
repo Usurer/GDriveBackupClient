@@ -9,6 +9,7 @@ using GDriveClientLib.Abstractions;
 using GDriveClientLib.Implementations;
 using LocalFileSystemLib;
 using GoogleDriveFileSystemLib;
+using Newtonsoft.Json;
 using GoogleFileManager = GoogleDriveFileSystemLib.FileManager;
 using LocalFileManager = LocalFileSystemLib.FileManager;
 
@@ -45,7 +46,7 @@ namespace GDriveBackupClient
             var localFSManager = new LocalFileManager();
             var googleFSManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
 
-            var backupsFolder = LoadGoogleBackupsFolder(googleFSManager);
+            var backupsFolder = LoadGoogleBackupsFolder(googleFSManager, "root", "Backups");
 
             Console.WriteLine("Enumerating {0} Backups folder children", backupsFolder.Children.Count());
             var children = backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList();
@@ -80,33 +81,34 @@ namespace GDriveBackupClient
             Console.ReadLine();
         }
 
-        private static INode LoadGoogleBackupsFolder(IFileManager googleFSManager)
+        private static INode LoadGoogleBackupsFolder(IFileManager googleFSManager, string currentRootPath, string folderName)
         {
-            var loadedId = ReadBackupsNodeId();
+            var currentRoot = googleFSManager.GetTree(currentRootPath);
+            var loadedId = ReadBackupsNodeId(currentRoot, folderName);
+
             if (string.IsNullOrEmpty(loadedId))
             {
                 Console.WriteLine("No saved data about Backups folder Id");
-                return FindGoogleBackupsFolder(googleFSManager);
+                return FindGoogleBackupsFolder(googleFSManager, currentRoot, folderName);
             }
             Console.WriteLine("Backups folder Id loaded. Getting data from Google");
             return googleFSManager.GetTree(loadedId);
         }
 
-        private static INode FindGoogleBackupsFolder(IFileManager googleFSManager)
+        private static INode FindGoogleBackupsFolder(IFileManager googleFSManager, INode currentRoot, string folderName)
         {
-            Console.WriteLine("Getting google data for {0}", "root");
-            var googleRoot = googleFSManager.GetTree("root");
+            Console.WriteLine($"Getting google data for '{currentRoot.Name}'");
 
             INode backupsFolder = null;
 
-            Console.WriteLine("Enumerating {0} google children, looking for Backups folder", googleRoot.Children.Count());
-            foreach (var child in googleRoot.Children)
+            Console.WriteLine($"Enumerating {currentRoot.Children.Count()} google children, looking for {folderName} folder");
+            foreach (var child in currentRoot.Children)
             {
                 Console.Write(".");
                 var childData = googleFSManager.GetTree(child.Id);
-                if (childData.Name == "Backups")
+                if (childData.Name == folderName)
                 {
-                    Console.WriteLine("Backups folder found");
+                    Console.WriteLine($"{folderName} folder found");
                     backupsFolder = childData;
                     break;
                 }
@@ -114,27 +116,56 @@ namespace GDriveBackupClient
 
             if (backupsFolder == null)
             {
-                throw new ApplicationException("No folder named 'Backups' found on Google Drive");
+                throw new ApplicationException($"No folder named '{folderName}' found in Google Drive {currentRoot.Name}");
             }
 
-            StoreBackupsNodeId(backupsFolder);
+            StoreBackupsNodeId(backupsFolder, currentRoot);
             return backupsFolder;
         }
 
-        private static void StoreBackupsNodeId(INode backupsNode)
+        // TODO: Multiple nodes to be stored
+        private static void StoreBackupsNodeId(INode backupsNode, INode rootNode)
         {
-            File.WriteAllText("backupsFolderId.txt", backupsNode.Id);
-            Console.WriteLine("Backups node Id stored");
+            File.WriteAllText("backupsFolderId.txt", JsonConvert.SerializeObject(new NodeBackupData(backupsNode, rootNode)));
+            Console.WriteLine($"{backupsNode.Name} node Id stored");
         }
 
-        private static string ReadBackupsNodeId()
+        // TODO: Search root by ID.
+        private static string ReadBackupsNodeId(INode currentRoot, string nodeName)
         {
             if (File.Exists("backupsFolderId.txt"))
             {
-                Console.WriteLine("Backups node Id loaded");
-                return File.ReadAllLines("backupsFolderId.txt").FirstOrDefault();
+                Console.WriteLine("Looking in backups file");
+                var savedData = JsonConvert.DeserializeObject<NodeBackupData>(File.ReadAllLines("backupsFolderId.txt").FirstOrDefault());
+                if (savedData.RootId == currentRoot.Id && savedData.NodeName == nodeName)
+                {
+                    Console.WriteLine("Saved dara found");
+                    return savedData.NodeId;
+                }
             }
             return string.Empty;
+        }
+
+        private class NodeBackupData
+        {
+            public NodeBackupData()
+            {
+            }
+
+            public NodeBackupData(INode backupNode, INode rootNode)
+            {
+                NodeId = backupNode.Id;
+                NodeName = backupNode.Name;
+                RootId = rootNode.Id;
+                RootName = rootNode.Name;
+            }
+            public string NodeId { get; set; }
+
+            public string NodeName { get; set; }
+
+            public string RootId { get; set; }
+
+            public string RootName { get; set; }
         }
     }
 }
