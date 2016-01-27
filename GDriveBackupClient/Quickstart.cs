@@ -46,43 +46,65 @@ namespace GDriveBackupClient
             var localFSManager = new LocalFileManager();
             var googleFSManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
 
-            var backupsFolder = LoadGoogleBackupsFolder(googleFSManager, "root", "Backups");
+            var backupsFolder = LoadGoogleBackupsFolder(googleFSManager);
+            PrintTree(backupsFolder, googleFSManager, localFSManager);
 
-            Console.WriteLine("Enumerating {0} Backups folder children", backupsFolder.Children.Count());
+            var foldersStack = new Stack<INode>();
+            foldersStack.Push(backupsFolder);
+
+            while (true)
+            {
+                Console.WriteLine("Enter a name of a folder to open or press enter to go up");
+                var folderToOpen = Console.ReadLine();
+                if (string.IsNullOrEmpty(folderToOpen))
+                {
+                    if (foldersStack.Count == 0)
+                    {
+                        Console.WriteLine("Oups, that was an upper level");
+                        break;
+                    }
+
+                    // Throwing latest folder away
+                    foldersStack.Pop();
+                }
+                else
+                {
+                    Console.WriteLine($"Looking for {folderToOpen} in {foldersStack.Peek().Name}");
+                    var folder = LoadSelectedFolderFromGoogle(googleFSManager, foldersStack.Peek().Id, folderToOpen);
+                    if (folder == null)
+                    {
+                        Console.WriteLine("Folder not found");
+                        continue;
+                    }
+
+                    foldersStack.Push(folder);
+                }
+
+                PrintTree(foldersStack.Peek(), googleFSManager, localFSManager);
+            }
+
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
+        }
+
+        private static void PrintTree(INode backupsFolder, GoogleFileManager googleFSManager, LocalFileManager localFSManager)
+        {
+            Console.WriteLine($"Enumerating {backupsFolder.Children.Count()} {backupsFolder.Name} children");
             var children = backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList();
 
-            Console.WriteLine("Getting local data for {0}", @"G:\DATA");
-            var localRoot = localFSManager.GetTree(@"G:\DATA");
-
-            Console.WriteLine("Enumerating {0} local FS children", localRoot.Children.Count());
-            foreach (var child in localRoot.Children)
+            /*Console.WriteLine("Getting local data for {0}", @"G:\DATA");
+            var localRoot = localFSManager.GetTree(@"G:\DATA");*/
+            foreach (var child in children)
             {
-                var childData = localFSManager.GetTree(child.Id);
-                child.Name = childData.Name;
-                child.NodeType = childData.NodeType;
-                child.Children = childData.Children;
-
-                if (
-                    !children.Where(g => !string.IsNullOrEmpty(g.Name))
-                        .Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    Console.WriteLine(" ! {0}", child.Name);
-                }
-                if (
-                    children.Where(g => !string.IsNullOrEmpty(g.Name))
-                        .Any(g => g.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    Console.WriteLine(" + {0}", child.Name);
-                }
+                Console.WriteLine(child.Name);
             }
 
             Console.WriteLine("=============");
-            Console.WriteLine("Done");
-            Console.ReadLine();
         }
 
-        private static INode LoadGoogleBackupsFolder(IFileManager googleFSManager, string currentRootPath, string folderName)
+        private static INode LoadGoogleBackupsFolder(IFileManager googleFSManager, string currentRootPath = "root", string folderName = "Backups")
         {
+            Console.WriteLine("Searching for first AKA root level stuff");
             var currentRoot = googleFSManager.GetTree(currentRootPath);
             var loadedId = ReadBackupsNodeId(currentRoot, folderName);
 
@@ -93,6 +115,13 @@ namespace GDriveBackupClient
             }
             Console.WriteLine("Backups folder Id loaded. Getting data from Google");
             return googleFSManager.GetTree(loadedId);
+        }
+
+        private static INode LoadSelectedFolderFromGoogle(IFileManager googleFSManager, string currentRootId, string folderName)
+        {
+            var currentRoot = googleFSManager.GetTree(currentRootId);
+            var folder = FindGoogleBackupsFolder(googleFSManager, currentRoot, folderName);
+            return googleFSManager.GetTree(folder.Id);
         }
 
         private static INode FindGoogleBackupsFolder(IFileManager googleFSManager, INode currentRoot, string folderName)
@@ -119,7 +148,11 @@ namespace GDriveBackupClient
                 throw new ApplicationException($"No folder named '{folderName}' found in Google Drive {currentRoot.Name}");
             }
 
-            StoreBackupsNodeId(backupsFolder, currentRoot);
+            if (folderName == "Backups")
+            {
+                StoreBackupsNodeId(backupsFolder, currentRoot);
+            }
+
             return backupsFolder;
         }
 
