@@ -28,6 +28,7 @@ namespace LocalFileSystemLib
 
             var result = new Node
             {
+                Id = directoryInfo.FullName,
                 Name = directoryInfo.Name,
                 NodeType = NodeType.Folder
             };

@@ -47,10 +47,15 @@ namespace GDriveBackupClient
             var googleFSManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
 
             var backupsFolder = LoadGoogleBackupsFolder(googleFSManager);
-            PrintTree(backupsFolder, googleFSManager, localFSManager);
+            var localDataRoot = localFSManager.GetTree(@"G:\Data");
 
-            var foldersStack = new Stack<INode>();
-            foldersStack.Push(backupsFolder);
+            PrintTree(backupsFolder, googleFSManager, localFSManager, localDataRoot);
+
+            var googleFolderAncestorsStack = new Stack<INode>();
+            googleFolderAncestorsStack.Push(backupsFolder);
+
+            var localFolderAncestorsStack = new Stack<INode>();
+            localFolderAncestorsStack.Push(localDataRoot);
 
             while (true)
             {
@@ -58,45 +63,62 @@ namespace GDriveBackupClient
                 var folderToOpen = Console.ReadLine();
                 if (string.IsNullOrEmpty(folderToOpen))
                 {
-                    if (foldersStack.Count == 0)
+                    if (googleFolderAncestorsStack.Count == 0)
                     {
                         Console.WriteLine("Oups, that was an upper level");
                         break;
                     }
 
                     // Throwing latest folder away
-                    foldersStack.Pop();
+                    googleFolderAncestorsStack.Pop();
+                    localFolderAncestorsStack.Pop();
                 }
                 else
                 {
-                    Console.WriteLine($"Looking for {folderToOpen} in {foldersStack.Peek().Name}");
-                    var folder = LoadSelectedFolderFromGoogle(googleFSManager, foldersStack.Peek().Id, folderToOpen);
-                    if (folder == null)
+                    Console.WriteLine($"Looking for {folderToOpen} in {googleFolderAncestorsStack.Peek().Name}");
+                    var googleFolder = LoadSelectedFolderFromGoogle(googleFSManager, googleFolderAncestorsStack.Peek().Id, folderToOpen);
+                    if (googleFolder == null)
                     {
                         Console.WriteLine("Folder not found");
                         continue;
                     }
 
-                    foldersStack.Push(folder);
+                    var localFolder = localFSManager.GetTree(localFolderAncestorsStack.Peek().Id + @"\" + googleFolder.Name);
+
+                    googleFolderAncestorsStack.Push(googleFolder);
+                    localFolderAncestorsStack.Push(localFolder);
                 }
 
-                PrintTree(foldersStack.Peek(), googleFSManager, localFSManager);
+                PrintTree(googleFolderAncestorsStack.Peek(), googleFSManager, localFSManager, localFolderAncestorsStack.Peek());
             }
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
 
-        private static void PrintTree(INode backupsFolder, GoogleFileManager googleFSManager, LocalFileManager localFSManager)
+        private static void PrintTree(INode backupsFolder, GoogleFileManager googleFSManager, LocalFileManager localFSManager, INode localNode)
         {
-            Console.WriteLine($"Enumerating {backupsFolder.Children.Count()} {backupsFolder.Name} children");
-            var children = backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList();
+            Console.WriteLine($"So we have Google {backupsFolder} and local {localNode}");
 
-            /*Console.WriteLine("Getting local data for {0}", @"G:\DATA");
-            var localRoot = localFSManager.GetTree(@"G:\DATA");*/
-            foreach (var child in children)
+            Console.WriteLine($"Enumerating Google's {backupsFolder.Children.Count()} {backupsFolder.Name} children");
+            var googleFolderChildren = backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList();
+
+            Console.WriteLine($"Enumerating Local {localNode.Children.Count()} {localNode.Name} at {localNode.Id} children");
+            var localFolderChildren = localNode.Children?.Select(child => localFSManager.GetTree(child.Id)).ToList();
+
+            localFolderChildren = localFolderChildren ?? new List<INode>();
+
+            var merge = googleFolderChildren.Concat(localFolderChildren.Where(x => googleFolderChildren.All(y => !y.Name.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase))));
+
+            foreach (var child in merge)
             {
-                Console.WriteLine(child.Name);
+                var isInLocal = localFolderChildren.Any(x => x.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase));
+                var isInGoogle = googleFolderChildren.Any(x => x.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase));
+                var isInBoth = isInLocal && isInGoogle;
+
+                var symbolicPrefix = isInBoth ? "*" : isInLocal ? "L" : "G";
+
+                Console.WriteLine($"{symbolicPrefix} {child.Name} | {child.Id}");
             }
 
             Console.WriteLine("=============");
