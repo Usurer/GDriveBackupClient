@@ -76,7 +76,7 @@ namespace GDriveBackupClient
                 else
                 {
                     Console.WriteLine($"Looking for {folderToOpen} in {googleFolderAncestorsStack.Peek().Name}");
-                    var googleFolder = LoadSelectedFolderFromGoogle(googleFSManager, googleFolderAncestorsStack.Peek().Id, folderToOpen);
+                    var googleFolder = LoadGoogleBackupsFolder(googleFSManager, googleFolderAncestorsStack.Peek().Id, folderToOpen);
                     if (googleFolder == null)
                     {
                         Console.WriteLine("Folder not found");
@@ -139,12 +139,12 @@ namespace GDriveBackupClient
             return googleFSManager.GetTree(loadedId);
         }
 
-        private static INode LoadSelectedFolderFromGoogle(IFileManager googleFSManager, string currentRootId, string folderName)
+        /*private static INode LoadSelectedFolderFromGoogle(IFileManager googleFSManager, string currentRootId, string folderName)
         {
             var currentRoot = googleFSManager.GetTree(currentRootId);
             var folder = FindGoogleBackupsFolder(googleFSManager, currentRoot, folderName);
             return googleFSManager.GetTree(folder.Id);
-        }
+        }*/
 
         private static INode FindGoogleBackupsFolder(IFileManager googleFSManager, INode currentRoot, string folderName)
         {
@@ -178,24 +178,38 @@ namespace GDriveBackupClient
             return backupsFolder;
         }
 
-        // TODO: Multiple nodes to be stored
-        private static void StoreBackupsNodeId(INode backupsNode, INode rootNode)
+        private static void StoreBackupsNodeId(INode nodeToBackup, INode parent)
         {
-            File.WriteAllText("backupsFolderId.txt", JsonConvert.SerializeObject(new NodeBackupData(backupsNode, rootNode)));
-            Console.WriteLine($"{backupsNode.Name} node Id stored");
+            var backupRecord = new NodeBackupData(nodeToBackup, parent);
+            var storedData = File.Exists("backupsFolderId.txt") ? File.ReadAllLines("backupsFolderId.txt").FirstOrDefault() : null;
+            var currentSaveData = storedData != null ? JsonConvert.DeserializeObject<IList<NodeBackupData>>(storedData) : new List<NodeBackupData>();
+            var existingRecord = currentSaveData.SingleOrDefault(x => x.RootId.Equals(parent.Id) && x.NodeName.Equals(nodeToBackup.Name));
+            if (existingRecord != null)
+            {
+                existingRecord.NodeId = backupRecord.NodeId;
+                existingRecord.NodeName = backupRecord.NodeName;
+                existingRecord.RootId = backupRecord.RootId;
+                existingRecord.RootName = backupRecord.RootName;
+            }
+            else
+            {
+                currentSaveData.Add(backupRecord);
+            }
+            File.WriteAllText("backupsFolderId.txt", JsonConvert.SerializeObject(currentSaveData));
+            Console.WriteLine($"{nodeToBackup.Name} node Id stored");
         }
 
-        // TODO: Search root by ID.
-        private static string ReadBackupsNodeId(INode currentRoot, string nodeName)
+        private static string ReadBackupsNodeId(INode parent, string nodeName)
         {
             if (File.Exists("backupsFolderId.txt"))
             {
                 Console.WriteLine("Looking in backups file");
-                var savedData = JsonConvert.DeserializeObject<NodeBackupData>(File.ReadAllLines("backupsFolderId.txt").FirstOrDefault());
-                if (savedData.RootId == currentRoot.Id && savedData.NodeName == nodeName)
+                var savedData = JsonConvert.DeserializeObject<IList<NodeBackupData>>(File.ReadAllLines("backupsFolderId.txt").FirstOrDefault());
+                var searchResult = savedData.SingleOrDefault(x => x.RootId.Equals(parent.Id) && x.NodeName.Equals(nodeName));
+                if (searchResult != null)
                 {
-                    Console.WriteLine("Saved dara found");
-                    return savedData.NodeId;
+                    Console.WriteLine("Saved data found");
+                    return searchResult.NodeId;
                 }
             }
             return string.Empty;
