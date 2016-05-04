@@ -47,15 +47,17 @@ namespace GDriveBackupClient
             var googleFSManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
 
             var backupsFolder = LoadGoogleBackupsFolder(googleFSManager);
-            var localDataRoot = localFSManager.GetTree(@"G:\Data");
+            var localDataRoot = localFSManager.GetTree(@"E:\CodeLearning\GDriveBackupClient\Data");
 
             PrintTree(backupsFolder, googleFSManager, localFSManager, localDataRoot);
 
-            var googleFolderAncestorsStack = new Stack<INode>();
+            /*var googleFolderAncestorsStack = new Stack<INode>();
             googleFolderAncestorsStack.Push(backupsFolder);
 
             var localFolderAncestorsStack = new Stack<INode>();
-            localFolderAncestorsStack.Push(localDataRoot);
+            localFolderAncestorsStack.Push(localDataRoot);*/
+
+            var navigator = new TreeNavigator(backupsFolder, localDataRoot, googleFSManager, localFSManager);
 
             while (true)
             {
@@ -63,33 +65,14 @@ namespace GDriveBackupClient
                 var folderToOpen = Console.ReadLine();
                 if (string.IsNullOrEmpty(folderToOpen))
                 {
-                    if (googleFolderAncestorsStack.Count == 0)
-                    {
-                        Console.WriteLine("Oups, that was an upper level");
-                        break;
-                    }
-
-                    // Throwing latest folder away
-                    googleFolderAncestorsStack.Pop();
-                    localFolderAncestorsStack.Pop();
+                    navigator.NavigateBothTreesUp();
                 }
                 else
                 {
-                    Console.WriteLine($"Looking for {folderToOpen} in {googleFolderAncestorsStack.Peek().Name}");
-                    var googleFolder = LoadGoogleBackupsFolder(googleFSManager, googleFolderAncestorsStack.Peek().Id, folderToOpen);
-                    if (googleFolder == null)
-                    {
-                        Console.WriteLine("Folder not found");
-                        continue;
-                    }
-
-                    var localFolder = localFSManager.GetTree(localFolderAncestorsStack.Peek().Id + @"\" + googleFolder.Name);
-
-                    googleFolderAncestorsStack.Push(googleFolder);
-                    localFolderAncestorsStack.Push(localFolder);
+                    navigator.NavigateBothTreesDown(folderToOpen);
                 }
 
-                PrintTree(googleFolderAncestorsStack.Peek(), googleFSManager, localFSManager, localFolderAncestorsStack.Peek());
+                PrintTree(navigator.GetCurrentGoogleNode(), googleFSManager, localFSManager, navigator.GetCurrentLocalNode());
             }
 
             Console.WriteLine("Press any key to exit");

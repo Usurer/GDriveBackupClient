@@ -33,6 +33,7 @@ namespace LocalFileSystemLib
                 NodeType = NodeType.Folder
             };
 
+            // TODO: it would be easy to fill Name for children nodes here, but it will be inconsistent with what Google Manager does since it doesn't fill the names. Think how to improve it.
             result.Children = directoryInfo.EnumerateFileSystemInfos().Select(fileSystemInfo => new Node { Id = fileSystemInfo.FullName, Children = new INode[0] }).ToList();
 
             return result;
