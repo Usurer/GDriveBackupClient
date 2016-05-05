@@ -34,9 +34,9 @@ namespace GDriveBackupClient
 
         public void NavigateBothTreesUp()
         {
-            if (GoogleStack.Count == 0 || LocalStack.Count == 0)
+            if (GoogleStack.Count <= 1 || LocalStack.Count <= 1)
             {
-                Console.WriteLine($"Cannot go UP in {(GoogleStack.Count == 0 ? "Google" : "Local or both")}");
+                Console.WriteLine($"Cannot go UP in {(GoogleStack.Count <= 1 ? "Google" : "Local or both")}");
             }
             else
             {
