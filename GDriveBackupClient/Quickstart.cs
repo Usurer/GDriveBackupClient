@@ -51,12 +51,6 @@ namespace GDriveBackupClient
 
             PrintTree(backupsFolder, googleFSManager, localFSManager, localDataRoot);
 
-            /*var googleFolderAncestorsStack = new Stack<INode>();
-            googleFolderAncestorsStack.Push(backupsFolder);
-
-            var localFolderAncestorsStack = new Stack<INode>();
-            localFolderAncestorsStack.Push(localDataRoot);*/
-
             var navigator = new TreeNavigator(backupsFolder, localDataRoot, googleFSManager, localFSManager);
 
             while (true)
@@ -74,22 +68,14 @@ namespace GDriveBackupClient
 
                 PrintTree(navigator.GetCurrentGoogleNode(), googleFSManager, localFSManager, navigator.GetCurrentLocalNode());
             }
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
 
         private static void PrintTree(INode backupsFolder, GoogleFileManager googleFSManager, LocalFileManager localFSManager, INode localNode)
         {
-            Console.WriteLine($"So we have Google {backupsFolder} and local {localNode}");
+            Console.WriteLine("=============");
 
-            Console.WriteLine($"Enumerating Google's {backupsFolder.Children.Count()} {backupsFolder.Name} children");
-            var googleFolderChildren = backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList();
-
-            Console.WriteLine($"Enumerating Local {localNode.Children.Count()} {localNode.Name} at {localNode.Id} children");
-            var localFolderChildren = localNode.Children?.Select(child => localFSManager.GetTree(child.Id)).ToList();
-
-            localFolderChildren = localFolderChildren ?? new List<INode>();
+            var googleFolderChildren = backupsFolder != null ? backupsFolder.Children.Select(child => googleFSManager.GetTree(child.Id)).ToList() : new List<INode>();
+            var localFolderChildren = localNode != null ? localNode.Children.Select(child => localFSManager.GetTree(child.Id)).ToList() : new List<INode>();
 
             var merge = googleFolderChildren.Concat(localFolderChildren.Where(x => googleFolderChildren.All(y => !y.Name.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase))));
 
@@ -101,7 +87,7 @@ namespace GDriveBackupClient
 
                 var symbolicPrefix = isInBoth ? "*" : isInLocal ? "L" : "G";
 
-                Console.WriteLine($"{symbolicPrefix} {child.Name} | {child.Id}");
+                Console.WriteLine($"{symbolicPrefix} {child.Name}");
             }
 
             Console.WriteLine("=============");
@@ -121,13 +107,6 @@ namespace GDriveBackupClient
             Console.WriteLine("Backups folder Id loaded. Getting data from Google");
             return googleFSManager.GetTree(loadedId);
         }
-
-        /*private static INode LoadSelectedFolderFromGoogle(IFileManager googleFSManager, string currentRootId, string folderName)
-        {
-            var currentRoot = googleFSManager.GetTree(currentRootId);
-            var folder = FindGoogleBackupsFolder(googleFSManager, currentRoot, folderName);
-            return googleFSManager.GetTree(folder.Id);
-        }*/
 
         private static INode FindGoogleBackupsFolder(IFileManager googleFSManager, INode currentRoot, string folderName)
         {
