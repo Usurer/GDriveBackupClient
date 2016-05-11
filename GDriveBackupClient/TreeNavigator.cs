@@ -94,7 +94,7 @@ namespace GDriveBackupClient
                 FileCacheManager.AddOrUpdate(child, currentRoot.Id);
                 if (child.Name.Equals(name))
                 {
-                    return child;
+                    return manager.GetTree(child.Id);
                 }
             }
             return null;

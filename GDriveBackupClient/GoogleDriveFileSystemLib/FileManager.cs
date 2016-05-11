@@ -29,13 +29,16 @@ namespace GoogleDriveFileSystemLib
 
             var infoResult = GetFileInfo(rootPath);
 
+            var asyncChildren = requestResult.Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id)}).ToArray();
+            Task.WaitAll(asyncChildren.Select(x => (Task)x).ToArray());
+
             var result = new Node
             {
                 Id = infoResult.Id,
                 Name = infoResult.Title,
                 NodeType = GetNodeType(infoResult),
                 // I want children to be populated either by user request or in some background thread as this is very time-consuming operation
-                Children = requestResult.Select(child => new Node { Id = child.Id, Name = GetFileInfo(child.Id).Title }).ToArray(),
+                Children = asyncChildren.Select(x => x.Result).Select(x => new Node {Id = x.Id, Name = x.Name.Title}).ToArray(),
             };
 
             return result;
@@ -45,6 +48,13 @@ namespace GoogleDriveFileSystemLib
         {
             var infoRequest = GoogleDriveService.Files.Get(rootPath);
             var infoResult = infoRequest.Execute();
+            return infoResult;
+        }
+
+        private async Task<File> GetFileInfoAsync(string rootPath)
+        {
+            var infoRequest = GoogleDriveService.Files.Get(rootPath);
+            var infoResult = await infoRequest.ExecuteAsync();
             return infoResult;
         }
 
