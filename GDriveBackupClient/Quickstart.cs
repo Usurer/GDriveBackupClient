@@ -23,9 +23,11 @@ namespace GDriveBackupClient
 
                 var localManager = new LocalFileManager();
                 var googleManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
-                var cacheManager = new FileCacheManager("filecache.txt");
+                // TODO: both cache managers should be singletons. I'm a bit worried about possible issues with race conditions when reading/writing, but I don't think this is something serious here
+                var fileCacheManager = new FileCacheManager("filecache.txt");
+                var memoryCacheManager = new MemoryCacheManager();
 
-                var app = new Application(googleManager, localManager, cacheManager);
+                var app = new Application(googleManager, localManager, fileCacheManager, memoryCacheManager);
                 app.Start();
             }
             catch (Exception ex)

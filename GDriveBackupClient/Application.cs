@@ -10,12 +10,14 @@ namespace GDriveBackupClient
         private IFileManager GoogleManager { get; set; }
         private IFileManager LocalManager { get; set; }
         private FileCacheManager FileCacheManager { get; set; }
+        private MemoryCacheManager MemoryCacheManager { get; set; }
 
-        public Application(IFileManager googleFileManager, IFileManager localFileManager, FileCacheManager fileCacheManager)
+        public Application(IFileManager googleFileManager, IFileManager localFileManager, FileCacheManager fileCacheManager, MemoryCacheManager memoryCacheManager)
         {
             GoogleManager = googleFileManager;
             LocalManager = localFileManager;
             FileCacheManager = fileCacheManager;
+            MemoryCacheManager = memoryCacheManager;
         }
 
         public void Start()
