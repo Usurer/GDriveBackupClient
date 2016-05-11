@@ -35,8 +35,7 @@ namespace GoogleDriveFileSystemLib
                 Name = infoResult.Title,
                 NodeType = GetNodeType(infoResult),
                 // I want children to be populated either by user request or in some background thread as this is very time-consuming operation
-                Children = requestResult
-                    .Select(child => new Node { Id = child.Id }).ToArray(),
+                Children = requestResult.Select(child => new Node { Id = child.Id, Name = GetFileInfo(child.Id).Title }).ToArray(),
             };
 
             return result;

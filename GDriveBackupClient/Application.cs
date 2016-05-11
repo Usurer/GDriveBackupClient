@@ -59,8 +59,8 @@ namespace GDriveBackupClient
             Console.WriteLine("=============");
 
             // TODO: Mind, that TreeNavigator already returns nodes filled with data and there is no need to call GetTree once again
-            var googleFolderChildren = backupsFolder != null ? backupsFolder.Children.Select(child => GoogleManager.GetTree(child.Id)).ToList() : new List<INode>();
-            var localFolderChildren = localNode != null ? localNode.Children.Select(child => LocalManager.GetTree(child.Id)).ToList() : new List<INode>();
+            var googleFolderChildren = backupsFolder != null ? backupsFolder.Children.ToList() : new List<INode>();
+            var localFolderChildren = localNode != null ? localNode.Children.ToList() : new List<INode>();
 
             var merge = googleFolderChildren.Concat(localFolderChildren.Where(x => googleFolderChildren.All(y => !y.Name.Equals(x.Name, StringComparison.InvariantCultureIgnoreCase))));
 
@@ -90,7 +90,6 @@ namespace GDriveBackupClient
             Console.WriteLine($"No saved data about {folderName} folder");
             var parent = GoogleManager.GetTree(parentId);
 
-            // GetTree returns only children IDs, so we gonna enumerate them and check for names
             var node = GetGoogleNodeByNameAndParent(parent, folderName);
 
             Console.WriteLine($"{folderName} loaded");
@@ -108,17 +107,13 @@ namespace GDriveBackupClient
             foreach (var child in parent.Children)
             {
                 Console.Write(".");
-                var cachedId = GetFromCache(name, parent.Id);
-                if (!String.IsNullOrEmpty(cachedId))
-                {
-                    return GoogleManager.GetTree(child.Id);
-                }
 
-                var childData = GoogleManager.GetTree(child.Id);
-                AddToCache(childData, parent.Id);
-
-                if (childData.Name == name)
+                if (child.Name == name)
                 {
+                    var childData = GoogleManager.GetTree(child.Id);
+
+                    AddToCache(childData, parent.Id);
+                    Console.WriteLine();
                     Console.WriteLine($"{name} folder found");
                     result = childData;
                     break;
