@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\GDriveClientLib\Core.csproj", "{1087517C-2775-488A-8E17-89D42738423D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalFileSystemLib", "..\LocalFileSystemLib\LocalFileSystemLib.csproj", "{6A08090E-DCAA-483A-8494-4104EB7F7544}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalFs", "..\LocalFileSystemLib\LocalFs.csproj", "{6A08090E-DCAA-483A-8494-4104EB7F7544}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DE1D9A7D-D944-4DA1-BC9C-1F89FF392C6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalFs.Tests", "Tests\LocalFs.Tests.csproj", "{DE1D9A7D-D944-4DA1-BC9C-1F89FF392C6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleDriveFileSystemLib", "GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj", "{FE80CBE2-B606-431E-A66A-DA4B02F09542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveFs", "GoogleDriveFileSystemLib\DriveFs.csproj", "{FE80CBE2-B606-431E-A66A-DA4B02F09542}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebClient", "..\WebClient\WebClient.xproj", "{2395DF9B-6CB4-44DB-B9F2-E4A62D08BF61}"
 EndProject

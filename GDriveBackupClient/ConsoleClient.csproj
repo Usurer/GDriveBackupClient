@@ -127,17 +127,17 @@
       <Project>{1087517c-2775-488a-8e17-89d42738423d}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LocalFileSystemLib\LocalFileSystemLib.csproj">
+    <ProjectReference Include="..\LocalFileSystemLib\LocalFs.csproj">
       <Project>{6a08090e-dcaa-483a-8494-4104eb7f7544}</Project>
-      <Name>LocalFileSystemLib</Name>
+      <Name>LocalFs</Name>
     </ProjectReference>
     <ProjectReference Include="..\Worker\Worker.csproj">
       <Project>{153d9f33-d7eb-47df-825c-02c3c6d3e766}</Project>
       <Name>Worker</Name>
     </ProjectReference>
-    <ProjectReference Include="GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj">
+    <ProjectReference Include="GoogleDriveFileSystemLib\DriveFs.csproj">
       <Project>{fe80cbe2-b606-431e-a66a-da4b02f09542}</Project>
-      <Name>GoogleDriveFileSystemLib</Name>
+      <Name>DriveFs</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

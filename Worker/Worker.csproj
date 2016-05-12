@@ -52,17 +52,17 @@
     <Compile Include="Navigation\TreeNavigator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GDriveBackupClient\GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj">
+    <ProjectReference Include="..\GDriveBackupClient\GoogleDriveFileSystemLib\DriveFs.csproj">
       <Project>{fe80cbe2-b606-431e-a66a-da4b02f09542}</Project>
-      <Name>GoogleDriveFileSystemLib</Name>
+      <Name>DriveFs</Name>
     </ProjectReference>
     <ProjectReference Include="..\GDriveClientLib\Core.csproj">
       <Project>{1087517c-2775-488a-8e17-89d42738423d}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LocalFileSystemLib\LocalFileSystemLib.csproj">
+    <ProjectReference Include="..\LocalFileSystemLib\LocalFs.csproj">
       <Project>{6a08090e-dcaa-483a-8494-4104eb7f7544}</Project>
-      <Name>LocalFileSystemLib</Name>
+      <Name>LocalFs</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
