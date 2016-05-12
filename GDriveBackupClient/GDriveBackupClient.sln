@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDriveBackupClient", "GDriveBackupClient.csproj", "{EC69472F-C446-4A57-B83C-149DFDD0ACC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient.csproj", "{EC69472F-C446-4A57-B83C-149DFDD0ACC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\GDriveClientLib\Core.csproj", "{1087517C-2775-488A-8E17-89D42738423D}"
 EndProject

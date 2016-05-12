@@ -114,9 +114,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="LocalFileSystemTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest2.cs" />
+    <Compile Include="FileCacheManagerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -138,9 +138,9 @@
       <Project>{153d9f33-d7eb-47df-825c-02c3c6d3e766}</Project>
       <Name>Worker</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GDriveBackupClient.csproj">
+    <ProjectReference Include="..\ConsoleClient.csproj">
       <Project>{ec69472f-c446-4a57-b83c-149dfdd0acc5}</Project>
-      <Name>GDriveBackupClient</Name>
+      <Name>ConsoleClient</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj">
       <Project>{fe80cbe2-b606-431e-a66a-da4b02f09542}</Project>
