@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GDriveClientLib.Abstractions;
+using Worker.Cache;
+using Worker.Navigation;
 
-namespace GDriveBackupClient
+namespace Worker
 {
-    internal class Application
+    public class Application
     {
         private IFileManager GoogleManager { get; set; }
         private IFileManager LocalManager { get; set; }

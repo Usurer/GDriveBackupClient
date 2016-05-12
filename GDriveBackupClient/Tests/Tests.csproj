@@ -134,6 +134,10 @@
       <Project>{6a08090e-dcaa-483a-8494-4104eb7f7544}</Project>
       <Name>LocalFileSystemLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Worker\Worker.csproj">
+      <Project>{153d9f33-d7eb-47df-825c-02c3c6d3e766}</Project>
+      <Name>Worker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GDriveBackupClient.csproj">
       <Project>{ec69472f-c446-4a57-b83c-149dfdd0acc5}</Project>
       <Name>GDriveBackupClient</Name>

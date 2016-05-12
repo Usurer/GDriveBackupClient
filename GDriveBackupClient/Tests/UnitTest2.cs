@@ -5,6 +5,7 @@ using System.Linq;
 using GDriveBackupClient;
 using GDriveClientLib.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Worker.Cache;
 
 namespace Tests
 {

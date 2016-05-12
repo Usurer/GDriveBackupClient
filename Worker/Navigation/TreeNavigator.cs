@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GDriveClientLib.Abstractions;
+using Worker.Cache;
 
-namespace GDriveBackupClient
+namespace Worker.Navigation
 {
-    internal class TreeNavigator
+    public class TreeNavigator
     {
         private Stack<INode> GoogleStack { get; set; }
         private Stack<INode> LocalStack { get; set; }

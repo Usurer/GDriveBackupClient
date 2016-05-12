@@ -2,7 +2,7 @@
 using System.Linq;
 using GDriveClientLib.Abstractions;
 
-namespace GDriveBackupClient
+namespace Worker.Cache
 {
     public class MemoryCacheManager
     {

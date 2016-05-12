@@ -4,7 +4,7 @@ using System.Linq;
 using GDriveClientLib.Abstractions;
 using Newtonsoft.Json;
 
-namespace GDriveBackupClient
+namespace Worker.Cache
 {
     public class FileCacheManager
     {
