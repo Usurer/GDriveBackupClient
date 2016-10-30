@@ -21,29 +21,49 @@ namespace GDriveBackupClient
             IContainer container = new Initializer().RegisterComponents();
 
             var localFSManager = new LocalFileSystemLib.FileManager();
+            var localTree = localFSManager.GetTree(@"C:\GDrive", 2);
+
             var googleFSManager = new GoogleDriveFileSystemLib.FileManager(container.Resolve<IGoogleDriveService>());
 
             var root = googleFSManager.GetTree("root", 2);
-            foreach (var child in root.Children)
-            {
-                Console.WriteLine(child.Name);
-            }
             
-            /*var backups =
-                googleFSManager.GetTree("root", 1)
-                    .Children.Where(x => x.Name.Equals("backups", StringComparison.InvariantCultureIgnoreCase))
-                    .Select((x, index) => new KeyValuePair<int, INode>(index, x))
-                    .ToArray();
-
-            foreach (var backup in backups)
+            /*foreach (var child in root.Children)
             {
-                Console.WriteLine("{0}. {1}", backup.Key, backup.Value.Id);
+                Console.Write(child.Name);
+                if (localTree.Children.Any(x => x.Name.Equals(child.Name, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    Console.Write(" V");
+                    Console.WriteLine("");
+                }
+                Console.WriteLine("");
+            }*/
+
+            var comparisonResult = Utils.CompareTwoEnumerables(root.Children, localTree.Children);
+
+            var initialCursorTop = Console.CursorTop;
+            var initialCursorLeft = Console.CursorLeft;
+
+            foreach (var driveChild in root.Children.OrderBy(x => x.NodeType).ThenBy(x => x.Name))
+            {
+                Console.ForegroundColor = comparisonResult.CommonNodesFistSequenceIds.Contains(driveChild.Id)
+                    ? ConsoleColor.Green
+                    : ConsoleColor.White;
+                Console.WriteLine(driveChild.Name);
             }
 
-            var first = backups.First();
+            Console.CursorTop = initialCursorTop;
+            Console.CursorLeft = 50;
 
-            var localFiles = localFSManager.GetTree(@"G:\DATA", null);
-            ListAbsent(localFiles, first.Value);*/
+            foreach (var localChild in localTree.Children.OrderBy(x => x.NodeType).ThenBy(x => x.Name))
+            {
+                Console.CursorLeft = 50;
+                Console.ForegroundColor = comparisonResult.CommonNodesSecondSequenceIds.Contains(localChild.Id)
+                    ? ConsoleColor.Green
+                    : ConsoleColor.White;
+                Console.WriteLine(localChild.Name);
+            }
+
+            Console.CursorLeft = initialCursorLeft;
 
             Console.WriteLine("=============");
             Console.WriteLine("Done");
