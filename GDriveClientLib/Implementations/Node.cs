@@ -13,5 +13,10 @@ namespace GDriveClientLib.Implementations
         public NodeType NodeType { get; set; }
 
         public IEnumerable<INode> Children { get; set; }
+
+        public override string ToString()
+        {
+            return $"Id: {Id} | {Name} | of type {NodeType}";
+        }
     }
 }
