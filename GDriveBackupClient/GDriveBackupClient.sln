@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GDriveBackupClient", "GDriveBackupClient.csproj", "{EC69472F-C446-4A57-B83C-149DFDD0ACC5}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DE1D9A7D-D944-4DA1-BC9C-1F89FF392C6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleDriveFileSystemLib", "GoogleDriveFileSystemLib\GoogleDriveFileSystemLib.csproj", "{FE80CBE2-B606-431E-A66A-DA4B02F09542}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormsGUI", "..\FormsGUI\FormsGUI.csproj", "{D22CDD19-9797-4F23-81BE-4944DEC26901}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{FE80CBE2-B606-431E-A66A-DA4B02F09542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE80CBE2-B606-431E-A66A-DA4B02F09542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE80CBE2-B606-431E-A66A-DA4B02F09542}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D22CDD19-9797-4F23-81BE-4944DEC26901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22CDD19-9797-4F23-81BE-4944DEC26901}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D22CDD19-9797-4F23-81BE-4944DEC26901}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D22CDD19-9797-4F23-81BE-4944DEC26901}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
