@@ -1,0 +1,108 @@
+{
+  "version": 2,
+  "exports": {
+    "Worker/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6",
+      "compile": {
+        "bin/Debug/Worker.dll": {}
+      },
+      "runtime": {
+        "../GDriveBackupClient/packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll": {},
+        "bin/Debug/Worker.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Worker.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "Core/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6",
+      "compile": {
+        "bin/Debug/GDriveClientLib.dll": {}
+      },
+      "runtime": {
+        "../GDriveBackupClient/packages/Autofac.4.2.0/lib/net45/Autofac.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.1.9.2/lib/net40/Google.Apis.PlatformServices.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.1.9.2/lib/net40/Google.Apis.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.Auth.1.9.2/lib/net40/Google.Apis.Auth.PlatformServices.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.Auth.1.9.2/lib/net40/Google.Apis.Auth.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.Core.1.9.2/lib/portable-net40+sl50+win+wpa81+wp80/Google.Apis.Core.dll": {},
+        "../GDriveBackupClient/packages/Google.Apis.Drive.v2.1.9.2.1940/lib/portable-net40+sl50+win+wpa81+wp80/Google.Apis.Drive.v2.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.Desktop.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Extensions.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Primitives.dll": {},
+        "../GDriveBackupClient/packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll": {},
+        "../GDriveBackupClient/packages/Zlib.Portable.Signed.1.11.0/lib/portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid/Zlib.Portable.dll": {},
+        "../GDriveBackupClient/packages/log4net.2.0.3/lib/net40-full/log4net.dll": {},
+        "bin/Debug/GDriveClientLib.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/GDriveClientLib.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "DriveFs/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6",
+      "compile": {
+        "bin/Debug/GoogleDriveFileSystemLib.dll": {}
+      },
+      "runtime": {
+        "../packages/Google.Apis.1.9.2/lib/net40/Google.Apis.PlatformServices.dll": {},
+        "../packages/Google.Apis.1.9.2/lib/net40/Google.Apis.dll": {},
+        "../packages/Google.Apis.Auth.1.9.2/lib/net40/Google.Apis.Auth.PlatformServices.dll": {},
+        "../packages/Google.Apis.Auth.1.9.2/lib/net40/Google.Apis.Auth.dll": {},
+        "../packages/Google.Apis.Core.1.9.2/lib/portable-net40+sl50+win+wpa81+wp80/Google.Apis.Core.dll": {},
+        "../packages/Google.Apis.Drive.v2.1.9.2.1940/lib/portable-net40+sl50+win+wpa81+wp80/Google.Apis.Drive.v2.dll": {},
+        "../packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.Desktop.dll": {},
+        "../packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.dll": {},
+        "../packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.dll": {},
+        "../packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Extensions.dll": {},
+        "../packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Primitives.dll": {},
+        "../packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll": {},
+        "../packages/Zlib.Portable.Signed.1.11.0/lib/portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid/Zlib.Portable.dll": {},
+        "../packages/log4net.2.0.3/lib/net40-full/log4net.dll": {},
+        "bin/Debug/GoogleDriveFileSystemLib.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/GoogleDriveFileSystemLib.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "LocalFs/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6",
+      "compile": {
+        "bin/Debug/LocalFileSystemLib.dll": {}
+      },
+      "runtime": {
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.Desktop.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.Extensions.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Bcl.Async.1.0.168/lib/net40/Microsoft.Threading.Tasks.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Extensions.dll": {},
+        "../GDriveBackupClient/packages/Microsoft.Net.Http.2.2.29/lib/net45/System.Net.Http.Primitives.dll": {},
+        "bin/Debug/LocalFileSystemLib.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/LocalFileSystemLib.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}
