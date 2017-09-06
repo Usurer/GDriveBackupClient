@@ -30,7 +30,7 @@ namespace Worker
                 
 
             var backupsFolder = LoadGoogleBackupsFolder();
-            var localDataRoot = LocalManager.GetTree(@"E:\CodeLearning\GDriveBackupClient\Data");
+            var localDataRoot = LocalManager.GetTree(@"G:\Coding\GoogleDriveClient\Data");
 
             PrintTree(backupsFolder, localDataRoot);
 
@@ -82,7 +82,7 @@ namespace Worker
             Console.WriteLine("=============");
         }
 
-        private INode LoadGoogleBackupsFolder(string parentId = "root", string folderName = "Backups")
+        private INode LoadGoogleBackupsFolder(string parentId = "root", string folderName = "tst")
         {
             Console.WriteLine("Searching for first AKA root level stuff");
             var cachedId = GetFromCache(folderName, parentId);
