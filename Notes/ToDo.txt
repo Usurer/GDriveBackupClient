@@ -1,0 +1,1 @@
+I've added Google's NuGet packages to the WebClient project to make things fast, but that's definitely wrong from the code quality PoV. I have to move this stuff outside, to a new project. Check what packages were added with Google Drive API by tracking changes in Git.
