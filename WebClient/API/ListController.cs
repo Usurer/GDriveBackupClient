@@ -1,9 +1,20 @@
-﻿using System;
+﻿using GDriveClientLib.Abstractions;
+using GDriveClientLib.Implementations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Configuration;
 using System.Web.Http;
+using Autofac;
+
+using GoogleFileManager = GoogleDriveFileSystemLib.FileManager;
+using LocalFileManager = LocalFileSystemLib.FileManager;
+
+using WebClient.Business;
 
 namespace WebClient.API
 {
@@ -34,6 +45,29 @@ namespace WebClient.API
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
+        }
+
+        [HttpGet]
+        [Route("api/list/GetLocalFolders/{rootPath}")]
+        public async Task<IEnumerable<string>> GetLocalFolders(string rootPath)
+        {
+            var appDataFolder = $@"{HttpRuntime.AppDomainAppPath}App_Data\";
+            var init = new Initializer();
+            var container = init.RegisterComponents(appDataFolder);
+
+            var localManager = new LocalFileManager();
+            var googleManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
+
+            var localTree = await localManager.GetTree(@"G:\Coding\GoogleDriveClient");
+            var remoteTree = await googleManager.GetTree("root");
+
+
+            var a = HttpRuntime.AppDomainAppPath;
+            var b = HttpRuntime.AppDomainAppVirtualPath;
+
+            //return new[] {a, b, rootPath};
+            return new[] { localTree.Name, remoteTree.Name };
+
         }
     }
 }

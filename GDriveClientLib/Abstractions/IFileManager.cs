@@ -1,7 +1,9 @@
-﻿namespace GDriveClientLib.Abstractions
+﻿using System.Threading.Tasks;
+
+namespace GDriveClientLib.Abstractions
 {
     public interface IFileManager
     {
-        INode GetTree(string rootPath);
+        Task<INode> GetTree(string rootPath);
     }
 }

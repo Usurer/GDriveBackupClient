@@ -23,14 +23,14 @@ namespace GoogleDriveFileSystemLib
             GoogleDriveService = googleDriveService;
         }
 
-        public INode GetTree(string rootPath)
+        public async Task<INode> GetTree(string rootPath)
         {
             var requestResult = GetAllChildren(rootPath);
 
             var infoResult = GetFileInfo(rootPath);
 
-            var asyncChildren = requestResult.Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id)}).ToArray();
-            Task.WaitAll(asyncChildren.Select(x => (Task)x).ToArray());
+            var asyncChildren = requestResult.Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id).ConfigureAwait(false)}).ToArray();
+            await Task.WhenAll(asyncChildren.Select(x => (Task)x).ToArray());
 
             var result = new Node
             {

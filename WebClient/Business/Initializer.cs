@@ -16,30 +16,30 @@ namespace WebClient.Business
 {
     public class Initializer
     {
-        public IContainer RegisterComponents()
+        public IContainer RegisterComponents(string resourcesFolderPath)
         {
             var builder = new ContainerBuilder();
 
             builder.RegisterType<Uploader>().SingleInstance().As<IUploader>();
             builder.RegisterType<Reader>().SingleInstance().As<IReader>();
 
-            var service = InitializeDriveService();
+            var service = InitializeDriveService(resourcesFolderPath);
             builder.RegisterInstance(service).SingleInstance().As<IGoogleDriveService>();
 
             return builder.Build();
         }
 
-        private IGoogleDriveService InitializeDriveService()
+        private IGoogleDriveService InitializeDriveService(string resourcesFolderPath)
         {
             UserCredential credential;
-            using (var filestream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
+            using (var filestream = new FileStream($"{resourcesFolderPath}client_secrets.json", FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(filestream).Secrets,
                         new[] { DriveService.Scope.Drive },
                         "user",
                         CancellationToken.None,
-                        new FileDataStore("DriveCommandLineSample"))
+                        new FileDataStore(resourcesFolderPath))
                     .Result;
             }
 
