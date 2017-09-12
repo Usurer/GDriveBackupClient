@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveFs", "GoogleDriveFileS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "..\Worker\Worker.csproj", "{153D9F33-D7EB-47DF-825C-02C3C6D3E766}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient", "..\WebClient\WebClient.csproj", "{2F13BFB3-B525-4753-82EA-B735BB03D925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{153D9F33-D7EB-47DF-825C-02C3C6D3E766}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{153D9F33-D7EB-47DF-825C-02C3C6D3E766}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{153D9F33-D7EB-47DF-825C-02C3C6D3E766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F13BFB3-B525-4753-82EA-B735BB03D925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F13BFB3-B525-4753-82EA-B735BB03D925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F13BFB3-B525-4753-82EA-B735BB03D925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F13BFB3-B525-4753-82EA-B735BB03D925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
