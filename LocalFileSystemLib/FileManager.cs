@@ -13,29 +13,40 @@ namespace LocalFileSystemLib
     {
         public async Task<INode> GetTree(string rootPath)
         {
+            Node node;
             var directoryInfo = new DirectoryInfo(rootPath);
+
             if (directoryInfo.Attributes != FileAttributes.Directory)
             {
                 var file = new FileInfo(rootPath);
-                return await new Task<INode>(() =>  new Node
+                node = new Node
                 {
                     Id = file.FullName,
                     Name = file.Name,
                     NodeType = NodeType.File,
                     Children = new INode[0],
-                }).ConfigureAwait(false);
+                };
+            }
+            else
+            {
+                node = new Node
+                {
+                    Id = directoryInfo.FullName,
+                    Name = directoryInfo.Name,
+                    NodeType = NodeType.Folder,
+                };
+
+                node.Children = directoryInfo.EnumerateFileSystemInfos()
+                    .Select(fileSystemInfo => new Node
+                    {
+                        Id = fileSystemInfo.FullName,
+                        Name = fileSystemInfo.Name,
+                        Children = new INode[0]
+                    })
+                    .ToList();
             }
 
-            var result = await new Task<INode>(() => new Node
-            {
-                Id = directoryInfo.FullName,
-                Name = directoryInfo.Name,
-                NodeType = NodeType.Folder
-            }).ConfigureAwait(false);
-
-            result.Children = directoryInfo.EnumerateFileSystemInfos().Select(fileSystemInfo => new Node { Id = fileSystemInfo.FullName, Name = fileSystemInfo.Name, Children = new INode[0] }).ToList();
-
-            return result;
+            return await Task.Run(() => node);
         }
     }
 }

@@ -7,6 +7,7 @@ using GDriveClientLib.Abstractions;
 using GDriveClientLib.Implementations;
 using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
+using Google.Apis.Requests;
 using Google.Apis.Services;
 
 namespace GoogleDriveFileSystemLib
@@ -25,12 +26,22 @@ namespace GoogleDriveFileSystemLib
 
         public async Task<INode> GetTree(string rootPath)
         {
-            var requestResult = GetAllChildren(rootPath);
+            var requestResult = await GetAllChildren(rootPath);
 
             var infoResult = GetFileInfo(rootPath);
 
-            var asyncChildren = requestResult.Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id).ConfigureAwait(false)}).ToArray();
-            await Task.WhenAll(asyncChildren.Select(x => (Task)x).ToArray());
+            var batchRequest = new BatchRequest(GoogleDriveService as DriveService);
+            var files = new List<File>();
+
+            foreach (var child in requestResult)
+            {
+                batchRequest.Queue<File>(GoogleDriveService.Files.Get(child.Id), (content, error, index, message) => { files.Add(content); });
+            }
+
+            await batchRequest.ExecuteAsync();
+
+            /*var asyncChildren = requestResult.Take(11).Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id).ConfigureAwait(false)}).ToArray();
+            await Task.WhenAll(asyncChildren);*/
 
             var result = new Node
             {
@@ -38,7 +49,8 @@ namespace GoogleDriveFileSystemLib
                 Name = infoResult.Title,
                 NodeType = GetNodeType(infoResult),
                 // I want children to be populated either by user request or in some background thread as this is very time-consuming operation
-                Children = asyncChildren.Select(x => x.Result).Select(x => new Node {Id = x.Id, Name = x.Name.Title}).ToArray(),
+                //Children = asyncChildren.Select(x => x.Result).Select(x => new Node {Id = x.Id, Name = x.Name.Title}).ToArray(),
+                Children = files.Select(x => new Node { Id = x.Id, Name = x.Title }).ToArray(),
             };
 
             return result;
@@ -58,16 +70,16 @@ namespace GoogleDriveFileSystemLib
             return infoResult;
         }
 
-        private List<ChildReference> GetAllChildren(string rootPath)
+        private async Task<List<ChildReference>> GetAllChildren(string rootPath)
         {
             var result = new List<ChildReference>();
-            var firstPageResult = GetChildrenPage(rootPath, null, PageSize);
+            var firstPageResult = await GetChildrenPage(rootPath, null, PageSize);
             result.AddRange(firstPageResult.Items);
 
             var token = firstPageResult.NextPageToken;
             while (!string.IsNullOrEmpty(token))
             {
-                var nextPageResult = GetChildrenPage(rootPath, token, PageSize);
+                var nextPageResult = await GetChildrenPage(rootPath, token, PageSize);
 
                 if (token == nextPageResult.NextPageToken)
                 {
@@ -82,12 +94,12 @@ namespace GoogleDriveFileSystemLib
             return result;
         }
 
-        private ChildList GetChildrenPage(string rootPath, string nextPageToken, int maxResults)
+        private async Task<ChildList> GetChildrenPage(string rootPath, string nextPageToken, int maxResults)
         {
             var request = GoogleDriveService.Children.List(rootPath);
             request.MaxResults = maxResults;
             request.PageToken = nextPageToken;
-            return request.Execute();
+            return await request.ExecuteAsync();
         }
 
         private NodeType GetNodeType(File file)
