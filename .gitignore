@@ -223,3 +223,4 @@ pip-log.txt
 GDriveBackupClient/client_secrets.json
 *client_secrets.json
 WebClient/App_Data/Google.Apis.Auth.OAuth2.Responses.TokenResponse-user
+WebClient/logs/

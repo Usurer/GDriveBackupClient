@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GDriveClientLib.Abstractions;
 using GDriveClientLib.Implementations;
 using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
 using Google.Apis.Requests;
-using Google.Apis.Services;
+using log4net;
 
 namespace GoogleDriveFileSystemLib
 {
     public class FileManager : IFileManager
     {
         private IGoogleDriveService GoogleDriveService { get; set; }
+        private ILog Log { get; set; }
 
         // TODO: Move to config
         private const int PageSize = 100;
@@ -22,6 +22,7 @@ namespace GoogleDriveFileSystemLib
         public FileManager(IGoogleDriveService googleDriveService)
         {
             GoogleDriveService = googleDriveService;
+            Log = log4net.LogManager.GetLogger(typeof(FileManager));
         }
 
         public async Task<INode> GetTree(string rootPath)
@@ -32,16 +33,32 @@ namespace GoogleDriveFileSystemLib
 
             var batchRequest = new BatchRequest(GoogleDriveService as DriveService);
             var files = new List<File>();
+            var errors = new List<RequestError>();
 
             foreach (var child in requestResult)
             {
-                batchRequest.Queue<File>(GoogleDriveService.Files.Get(child.Id), (content, error, index, message) => { files.Add(content); });
+                var request = GoogleDriveService.Files.Get(child.Id);
+                batchRequest.Queue<File>(request, (content, error, index, message) =>
+                {
+                    if (error != null)
+                    {
+                        errors.Add(error);
+                    }
+                    files.Add(content);
+                });
             }
 
             await batchRequest.ExecuteAsync();
 
-            /*var asyncChildren = requestResult.Take(11).Select(async (child) => new {Id = child.Id, Name = await GetFileInfoAsync(child.Id).ConfigureAwait(false)}).ToArray();
-            await Task.WhenAll(asyncChildren);*/
+            if (errors.Any())
+            {
+                Log.Debug($"Batch Request errors: {Environment.NewLine}{string.Join(Environment.NewLine, errors.Select(x => x.Message))}");
+            }
+
+            if (files.Any(x => x == null))
+            {
+                throw new Exception($"List of files contains {files.Count(x => x == null)} NULL values of total {files.Count} elements. WTF?!");
+            }
 
             var result = new Node
             {
@@ -110,3 +127,4 @@ namespace GoogleDriveFileSystemLib
         }
     }
 }
+

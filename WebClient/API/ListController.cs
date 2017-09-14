@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using Autofac;
+using log4net;
+using log4net.Core;
 using GoogleFileManager = GoogleDriveFileSystemLib.FileManager;
 using LocalFileManager = LocalFileSystemLib.FileManager;
 
@@ -20,6 +22,20 @@ namespace WebClient.API
 {
     public class ListController : ApiController
     {
+        private LocalFileManager LocalFileManager { get; set; }
+        private GoogleFileManager GoogleFileManager { get; set; }
+
+        public ListController()
+        {
+            var appDataFolder = $@"{HttpRuntime.AppDomainAppPath}App_Data\";
+            var init = new Initializer();
+            var container = init.RegisterComponents(appDataFolder);
+
+            LocalFileManager = new LocalFileManager();
+            GoogleFileManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
+        }
+
+
         // GET api/<controller>
         public IEnumerable<string> Get()
         {
@@ -48,30 +64,31 @@ namespace WebClient.API
         }
 
         [HttpGet]
-        [Route("api/list/GetLocalFolders/{rootPathEncoded}")]
-        public async Task<IEnumerable<string>> GetLocalFolders(string rootPathEncoded)
+        [Route("api/list/GetLocalFolders/")]
+        public async Task<IEnumerable<string>> GetLocalFolders([FromUri] string rootPathEncoded = "")
         {
 
             var rootPath = string.IsNullOrEmpty(rootPathEncoded)
                 ? @"G:\Coding\GoogleDriveClient"
                 : Encoding.UTF8.GetString(Convert.FromBase64String(rootPathEncoded));
             
-            var appDataFolder = $@"{HttpRuntime.AppDomainAppPath}App_Data\";
-            var init = new Initializer();
-            var container = init.RegisterComponents(appDataFolder);
+            var localTree = await LocalFileManager.GetTree(rootPath);
 
-            var localManager = new LocalFileManager();
-            var googleManager = new GoogleFileManager(container.Resolve<IGoogleDriveService>());
+            return localTree.Children.Select(x => x.Name);
+        }
 
-            var localTree = await localManager.GetTree(rootPath);
-            var remoteTree = await googleManager.GetTree("root");
-
-            return new[]
+        [HttpGet]
+        [Route("api/list/GetRemoteFolders/")]
+        public async Task<IEnumerable<string>> GetRemoteFolders([FromUri] string rootId)
+        {
+            if (string.IsNullOrEmpty(rootId))
             {
-                string.Join(", ", localTree.Children.Select(x => x.Name)),
-                string.Join(", ", remoteTree.Children.Select(x => x.Name))
-            };
+                rootId = "root";
+            }
 
+            var remoteTree = await GoogleFileManager.GetTree(rootId);
+
+            return remoteTree.Children.Select(x => x.Name);
         }
     }
 }
